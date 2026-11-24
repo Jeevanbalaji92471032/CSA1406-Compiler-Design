@@ -1,0 +1,63 @@
+GRAMMAR:S → aS
+S → Sb
+S → ab
+CODE:
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    char string[50];
+    int i, flag = 0, accepted = 1;
+
+    printf("The grammar is: S->aS, S->Sb, S->ab\n");
+
+    printf("Enter the string to be checked:\n");
+    scanf("%49s", string);
+
+    if (string[0] != 'a')
+    {
+        accepted = 0;
+    }
+    else
+    {
+        for (i = 0; string[i] != '\0'; i++)
+        {
+            if (string[i] == 'a')
+            {
+                if (flag == 1)
+                {
+                    accepted = 0;
+                    break;
+                }
+            }
+            else if (string[i] == 'b')
+            {
+                flag = 1;
+            }
+            else
+            {
+                accepted = 0;
+                break;
+            }
+        }
+
+        if (flag == 0)
+            accepted = 0;
+    }
+
+    if (accepted)
+        printf("String accepted");
+    else
+        printf("String not accepted");
+
+    return 0;
+}
+
+OUTPUT:
+The grammar is: S->aS, S->Sb, S->ab
+
+Enter the string to be checked:
+abb
+
+String accepted
