@@ -1,0 +1,94 @@
+GRAMMAR:
+E → E + E
+E → E - E
+E → E * E
+E → E / E
+E → E ^ E
+E → (E)
+E → i
+
+CODE:
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+char input[100];
+int pos = 0;
+
+int precedence(char op)
+{
+    if (op == '+' || op == '-')
+        return 1;
+    if (op == '*' || op == '/')
+        return 2;
+    if (op == '^')
+        return 3;
+    return 0;
+}
+
+int expression(int minPrec);
+
+int factor()
+{
+    if (input[pos] == 'i')
+    {
+        pos++;
+        return 1;
+    }
+
+    if (input[pos] == '(')
+    {
+        pos++;
+
+        if (!expression(1))
+            return 0;
+
+        if (input[pos] == ')')
+        {
+            pos++;
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+int expression(int minPrec)
+{
+    if (!factor())
+        return 0;
+
+    while (precedence(input[pos]) >= minPrec &&
+           precedence(input[pos]) != 0)
+    {
+        char op = input[pos];
+        int prec = precedence(op);
+
+        pos++;
+
+        if (!expression(prec + (op == '^' ? 0 : 1)))
+            return 0;
+    }
+
+    return 1;
+}
+
+int main()
+{
+    printf("OPERATOR PRECEDENCE PARSER\n");
+    printf("Enter the expression: ");
+    scanf("%99s", input);
+
+    if (expression(1) && input[pos] == '\0')
+        printf("\nString Accepted");
+    else
+        printf("\nString Not Accepted");
+
+    return 0;
+}
+
+OUTPUT:
+OPERATOR PRECEDENCE PARSER
+Enter the expression: i*(i+i)*i
+
+String Accepted
