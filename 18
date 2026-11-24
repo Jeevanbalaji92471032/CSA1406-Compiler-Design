@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    int n, i;
+    char code[50][50];
+    char result, op1, operator, op2;
+
+    printf("Enter the number of intermediate codes: ");
+    scanf("%d", &n);
+
+    for (i = 0; i < n; i++)
+    {
+        printf("Enter the three address code %d: ", i + 1);
+        scanf("%49s", code[i]);
+    }
+
+    printf("\nThe generated code is:\n");
+
+    for (i = 0; i < n; i++)
+    {
+        if (sscanf(code[i], "%c=%c%c%c",
+                   &result, &op1, &operator, &op2) != 4)
+        {
+            printf("Invalid intermediate code\n");
+            continue;
+        }
+
+        printf("\nMOV %c, R%d", op1, i);
+
+        switch (operator)
+        {
+            case '+':
+                printf("\nADD %c, R%d", op2, i);
+                break;
+
+            case '-':
+                printf("\nSUB %c, R%d", op2, i);
+                break;
+
+            case '*':
+                printf("\nMUL %c, R%d", op2, i);
+                break;
+
+            case '/':
+                printf("\nDIV %c, R%d", op2, i);
+                break;
+
+            default:
+                printf("\nInvalid operator");
+                continue;
+        }
+
+        printf("\nMOV R%d, %c\n", i, result);
+    }
+
+    return 0;
+}
+
+OUTPUT:
+Enter the number of intermediate codes: 2
+
+Enter the three address code 1: a=b+c
+Enter the three address code 2: d=n*d
+
+The generated code is:
+
+MOV b, R0
+ADD c, R0
+MOV R0, a
+
+MOV n, R1
+MUL d, R1
+MOV R1, d
