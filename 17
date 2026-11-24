@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <ctype.h>
+
+int main()
+{
+    int ch;
+    int characters = 0, words = 0, lines = 0;
+    int inWord = 0, hasContent = 0;
+
+    printf("Enter the text (Enter ~ to stop):\n");
+
+    while ((ch = getchar()) != '~' && ch != EOF)
+    {
+        hasContent = 1;
+
+        if (!isspace(ch))
+            characters++;
+
+        if (isspace(ch))
+        {
+            inWord = 0;
+        }
+        else if (!inWord)
+        {
+            words++;
+            inWord = 1;
+        }
+
+        if (ch == '\n')
+            lines++;
+    }
+
+    if (hasContent && (lines == 0 || ch == '~'))
+        lines++;
+
+    printf("\nTotal number of words: %d\n", words);
+    printf("Total number of lines: %d\n", lines);
+    printf("Total number of characters: %d\n", characters);
+
+    return 0;
+}
+
+OUTPUT:
+Enter the text (Enter ~ to stop):
+void main()
+{
+int a;
+int b;
+a = b + c;
+c = d * e;
+}~
+
+Total number of words: 18
+Total number of lines: 7
+Total number of characters: 31
