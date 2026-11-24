@@ -1,0 +1,103 @@
+GRAMMAR:
+E → E + E
+E → E / E
+E → E * E
+E → a / b
+CODE:
+#include <stdio.h>
+#include <string.h>
+
+char input[50], stack[50];
+int top = -1;
+
+void reduce()
+{
+    if (stack[top] == 'a' || stack[top] == 'b')
+    {
+        stack[top] = 'E';
+        stack[top + 1] = '\0';
+        printf("\t\tE -> a/b\n");
+    }
+
+    while (top >= 2 &&
+          stack[top] == 'E' &&
+          (stack[top - 1] == '+' ||
+           stack[top - 1] == '*' ||
+           stack[top - 1] == '/') &&
+          stack[top - 2] == 'E')
+    {
+        char op = stack[top - 1];
+
+        top -= 2;
+        stack[top] = 'E';
+        stack[top + 1] = '\0';
+
+        printf("\t\tE -> E%cE\n", op);
+    }
+}
+
+int main()
+{
+    int i;
+
+    printf("\nSHIFT REDUCE PARSER\n");
+    printf("\nGRAMMAR\n");
+    printf("E -> E+E\n");
+    printf("E -> E/E\n");
+    printf("E -> E*E\n");
+    printf("E -> a/b\n");
+
+    printf("\nEnter the input symbol: ");
+    scanf("%49s", input);
+
+    printf("\nStack\t\tInput\t\tAction\n");
+    printf("$\t\t%s$\t\t--\n", input);
+
+    for (i = 0; input[i] != '\0'; i++)
+    {
+        if (input[i] != 'a' && input[i] != 'b' &&
+            input[i] != '+' && input[i] != '*' &&
+            input[i] != '/')
+        {
+            printf("Invalid symbol\n");
+            return 0;
+        }
+
+        stack[++top] = input[i];
+        stack[top + 1] = '\0';
+
+        printf("$%s\t\t%s$\t\tShift\n",
+               stack, input + i + 1);
+
+        reduce();
+    }
+
+    if (top == 0 && stack[0] == 'E')
+        printf("\nString Accepted");
+    else
+        printf("\nString Rejected");
+
+    return 0;
+}
+
+OUTPUT:
+SHIFT REDUCE PARSER
+
+GRAMMAR
+E -> E+E
+E -> E/E
+E -> E*E
+E -> a/b
+
+Enter the input symbol: a+b
+
+Stack           Input           Action
+$               a+b$             --
+$a              +b$              Shift
+                E -> a/b
+$a+             b$               Shift
+$a+b            $                Shift
+                E -> a/b
+$E              $                E -> E+E
+
+String Accepted
